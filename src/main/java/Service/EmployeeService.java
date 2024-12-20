@@ -1,5 +1,5 @@
-package Service;
-import EmployeeRepository.EmployeeRepository;
+package be.ehb.employee.Service;
+import be.ehb.employee.EmployeeRepository.EmployeeRepository;
 import be.ehb.employee.Employee;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,12 +16,8 @@ public class EmployeeService {
     public List<Employee> getAllEmployees() {
         return (List<Employee>) employeeRepository.findAll();
     }
-    public Optional<Employee> getEmployeeById(Long id) {
-        return employeeRepository.findById(id);
-    }
-
-    public List<Employee> searchEmployees(String search) {
-        return employeeRepository.findByNameContaining(search);
+    public Employee getEmployeeById(Long id) {
+        return employeeRepository.findById(id).orElse(null);
     }
 
     public List<Employee> getEmployeeByName(String name) {
@@ -32,11 +28,25 @@ public class EmployeeService {
         return employeeRepository.save(employee);
     }
 
-    public void deleteEmployee(Long id) {
-        employeeRepository.deleteById(id);
+    public List<Employee> searchEmployees(String search) {
+        return employeeRepository.findByNameContainingIgnoreCase(search);
     }
-    public Employee updateEmployee(Long id, Employee employeeData) {
-        employeeData.setId(id);
-        return employeeRepository.save(employeeData);
+
+   public String deleteEmployee(Long id) {
+        if (employeeRepository.existsById(id)) {
+            employeeRepository.deleteById(id);
+            return "Employee deleted successfully";
+        }
+        return "Employee not found";
+    }
+    public Employee updateEmployee(Employee employee) {
+        if (employeeRepository.existsById(employee.getId())) {
+            return employeeRepository.save(employee);
+        }
+        return null;
+    }
+
+    public List<Employee> searchEmployeesByName(String search) {
+        return employeeRepository.findByNameContainingIgnoreCase(search);
     }
 }
