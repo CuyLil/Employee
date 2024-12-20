@@ -5,8 +5,8 @@ import static org.mockito.Mockito.*;
 
 import org.junit.jupiter.api.BeforeEach;
 
-import EmployeeRepository.EmployeeRepository;
-import Service.EmployeeService;
+import be.ehb.employee.EmployeeRepository.EmployeeRepository;
+import be.ehb.employee.Service.EmployeeService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -46,8 +46,8 @@ class EmployeeApplicationTests {
 	@Test
 	public void testGetEmployeeById() {
 		when(employeeRepository.findById(1L)).thenReturn(Optional.of(employee));
-		Optional<Employee> foundEmployee = employeeService.getEmployeeById(1L);
-		assertThat(foundEmployee).isPresent().contains(employee);
+		Employee foundEmployee = employeeService.getEmployeeById(1L);
+		assertThat(foundEmployee).isEqualTo(employee);
 		verify(employeeRepository, times(1)).findById(1L);
 	}
 
@@ -70,7 +70,7 @@ class EmployeeApplicationTests {
 	public void testUpdateEmployee() {
 		when(employeeRepository.save(employee)).thenReturn(employee);
 		employee.setName("Jane Doe");
-		Employee updatedEmployee = employeeService.updateEmployee(1L, employee);
+		Employee updatedEmployee = employeeService.updateEmployee(employee);
 		assertThat(updatedEmployee.getName()).isEqualTo("Jane Doe");
 		verify(employeeRepository, times(1)).save(employee);
 	}
